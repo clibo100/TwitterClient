@@ -1,6 +1,6 @@
 # TwitterClient.py
 # Sierra Clibourne, ID: 2263981
-# Jennifer Prosinski, ID: //TODO
+# Jennifer Prosinski, ID: 2262063
 # A twitter Client implimentation
 # Final Project - Data Communications/ Computer Networks - Michael Fahy
 # Start Date: 11/7/2017
@@ -12,7 +12,7 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
                       consumer_secret='Ri4GQ1eEc8yLwpkCI4UkKxtbMXxObLzor8Gep97pXHROlLF9WR',
                       access_token_key='908004742424518656-ePYoPahlW08jOWm62ppI9U6FOqUOEeN',
                       access_token_secret='5nP7uYGnnE5qo2sYKKpYkQ4QDQJ9oEB7RTOWoLabFC5cc')
-#user ID for acc is 908004742424518656, @ is @clibo100, we'll make this modular once i fugure out how logging in will work
+#user ID for acc is 908004742424518656, @ is @clibo100, we'll make this modular once i figure out how logging in will work
 
 import json
 
