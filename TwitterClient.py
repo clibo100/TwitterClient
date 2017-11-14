@@ -15,6 +15,7 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
 #user ID for acc is 908004742424518656, @ is @clibo100, we'll make this modular once i figure out how logging in will work
 
 import json
+import tkinter #this is for the gui
 
 from urllib import unquote
 
@@ -69,6 +70,12 @@ def tweet():
 def main():
     print "Welcome to TweetTeamRocket, a Twitter Client"
     done = 0
+    
+    #these are for the gui
+    top = tkinter.Tk()
+    top.mainloop()
+
+    #main program loop
     while done == 0:
         choice = userPrompt()
         if choice == 0:
