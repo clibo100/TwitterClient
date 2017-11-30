@@ -1,4 +1,3 @@
-
 from Tkinter import *
 import twitter
 import json
@@ -11,7 +10,6 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
 
 global counter
 counter = 0
-
 
 class TwitterClient:
     def __init__(self, master):
@@ -27,11 +25,13 @@ class TwitterClient:
         self.mytweets = Button(master, text="My Tweets", command = self.clickMyTweets)
         self.timeline = Button(master, text="Timeline", command = self.clickTimeline)
         self.followers = Button(master, text="Following", command = self.clickFollowing)
-        self.tweet = Button(master, text="Tweet", command = self.greet)
-        self.name = Label(master, text="Barack Obama")
-        self.user = Label(master, text="@BarackObama")
-        self.body = Label(master, text="body is empty", wraplength = 200)
+        self.tweet = Button(master, text="Tweet", command = self.clickTweet)
+        self.name = Label(master, text="Choose an option above")
+        self.user = Label(master, text=" ")
+        self.body = Label(master, text=" ", wraplength = 200)
         self.next = Button(master, text="Next", command = self.greet)
+        self.tweetfield = Entry(master, validate = "key", validatecommand = (vcmd, '%P'))
+        self.tweetbutton = Button(master, text="Tweet", command = self.clickSendTweet)
 
         self.searchbar.grid(row = 0, column = 0, columnspan = 10, sticky = W)
         self.searchbutton.grid(row = 0, column = 11, columnspan = 10, sticky = W)
@@ -43,8 +43,11 @@ class TwitterClient:
         self.user.grid(row = 3, column = 0, columnspan = 20, sticky = W)
         self.body.grid(row = 4, column = 0, columnspan = 20, sticky = W)
         self.next.grid(row = 5, column = 15, columnspan = 5, sticky = E)
+        self.tweetfield.grid(row = 5, column = 0, columnspan = 10, sticky = W)
+        self.tweetbutton.grid(row = 5, column = 11, columnspan = 5, sticky = W)
 
-
+        self.tweetfield.grid_remove()
+        self.tweetbutton.grid_remove()
 
     def validate(self, new_text):
         if not new_text: # the field is being cleared
@@ -84,6 +87,8 @@ class TwitterClient:
         counter += 1
 
     def clickFollowing(self):
+        self.tweetfield.grid_remove()
+        self.tweetbutton.grid_remove()
         counter = 0
         self.body.configure(text = " ")
         self.next.configure(command = self.printFollowing(counter))
@@ -91,14 +96,33 @@ class TwitterClient:
         counter += 1
 
     def clickMyTweets(self):
+        self.tweetfield.grid_remove()
+        self.tweetbutton.grid_remove()
         counter = 0
         self.printMyTweet(counter)
         counter += 1
 
     def clickTimeline(self):
+        self.tweetfield.grid_remove()
+        self.tweetbutton.grid_remove()
         counter = 0
         self.printTimelineTweet(counter)
         counter += 1
+
+    def clickTweet(self):
+        self.name.configure(text = " ")
+        self.user.configure(text = " ")
+        self.body.configure(text = " ")
+        self.tweetfield.grid()
+        self.tweetbutton.grid()
+
+    def clickSendTweet(self):
+        user_input = self.tweetfield.get()
+        if len(user_input) > 280:
+            self.name.configure(text = "tweet too long")
+        else:
+            self.name.configure(text = "tweet successful")
+            status = twitter_api.PostUpdate(user_input)
 
 root = Tk()
 twitter_gui = TwitterClient(root)
