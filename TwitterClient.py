@@ -140,7 +140,7 @@ class TwitterClient:
         user_input = self.tweetfield.get()
         global statuses1
         global statuses2
-        if len(user_input) > 280:
+        if len(user_input) > 140:
             self.name.configure(text = "tweet too long")
         else:
             self.name.configure(text = "tweet successful")
