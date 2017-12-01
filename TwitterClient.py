@@ -24,6 +24,8 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
 #global variables
 global counter
 counter = 0
+global choice 
+choice = 0
 
 #main class
 class TwitterClient:
@@ -33,7 +35,7 @@ class TwitterClient:
 
         #makes the GUI window
         self.master = master
-
+        counter = 0
         #set title in window
         master.title("TeamRocketTweet")
 
@@ -42,7 +44,7 @@ class TwitterClient:
 
         #make all of the elements of the GUI, assign them titles and commands
         self.searchbar = Entry(master, validate="key", validatecommand=(vcmd, '%P'))
-        self.searchbutton = Button(master, text="Search Tweets", command = self.searchTwitter)
+        self.searchbutton = Button(master, text="Search Tweets", command = self.clickSearch)
         self.mytweets = Button(master, text="My Tweets", command = self.clickMyTweets)
         self.timeline = Button(master, text="Timeline", command = self.clickTimeline)
         self.followers = Button(master, text="Following", command = self.clickFollowing)
@@ -50,7 +52,7 @@ class TwitterClient:
         self.name = Label(master, text="Choose an option above")
         self.user = Label(master, text=" ")
         self.body = Label(master, text=" ", wraplength = 200)
-        self.next = Button(master, text="Next", command = self.greet)
+        self.next = Button(master, text="Next", command = self.clickNext)
         self.tweetfield = Entry(master, validate = "key", validatecommand = (vcmd, '%P'))
         self.tweetbutton = Button(master, text="Tweet", command = self.clickSendTweet)
 
@@ -73,6 +75,7 @@ class TwitterClient:
         self.tweetbutton.grid_remove()
         self.next.grid_remove()
 
+        self.greet()
 
     def validate(self, new_text): #function needed to validate the entry on an EditText field
         if not new_text:
@@ -88,51 +91,33 @@ class TwitterClient:
     def greet(self): #this is for error testing 
         print("Greetings!")
 
-    def printMyTweet(self, counter): #puts tweet into the GUI and incriments counter 
-        statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
-        self.name.configure(text = statuses[counter].user.name)
-        self.user.configure(text = "@" + statuses[counter].user.screen_name)
-        self.body.configure(text = statuses[counter].text)
-        counter += 1
-
-    def printTimelineTweet(self, counter): #puts tweet into the GUI and incriments counter 
-        statuses = twitter_api.GetHomeTimeline()
-        self.name.configure(text = statuses[counter].user.name)
-        self.user.configure(text = "@" + statuses[counter].user.screen_name)
-        self.body.configure(text = statuses[counter].text)
-        counter += 1
-
-    def printFollowing(self, counter): #puts following into the GUI and incriments counter 
-        users = twitter_api.GetFriends()
-        self.name.configure(text = users[counter].name)
-        self.user.configure(text = "@" + users[counter].screen_name)
-        counter += 1
-
     def clickFollowing(self): #removes and adds elements of GUI, configures next button, displays first element
         self.next.grid()
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
+        users = twitter_api.GetFriends()
         counter = 0
+        choice = 0
         self.body.configure(text = " ")
-        self.next.configure(command = self.printFollowing(counter))
-        self.printFollowing(counter)
-        counter += 1
+        self.clickNext()
 
     def clickMyTweets(self): #removes and adds elements of GUI, configures next button, displays first element
         self.next.grid()
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
         counter = 0
-        self.printMyTweet(counter)
-        counter += 1
+        choice = 1
+        statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
+        self.clickNext()
 
     def clickTimeline(self): #removes and adds elements of GUI, configures next button, displays first element
         self.next.grid()
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
         counter = 0
-        self.printTimelineTweet(counter)
-        counter += 1
+        choice = 2
+        statuses = twitter_api.GetHomeTimeline()
+        self.clickNext()
 
     def clickTweet(self): #removes and adds elements of GUI, configures next button, displays first element
         self.name.configure(text = " ")
@@ -150,20 +135,42 @@ class TwitterClient:
             self.name.configure(text = "tweet successful")
             status = twitter_api.PostUpdate(user_input)
 
-    def searchTwitter(self): #gets array of tweets with a search term, displays first one
+    def clickSearch(self): #gets array of tweets with a search term, displays first one
         self.next.grid()
-        count = 1000
         counter = 0
         query = self.searchbar.get()
         statuses = twitter_api.GetSearch(term = query)
-        self.next.configure(command = self.searchNext(statuses, counter))
-        self.searchNext(statuses, counter)
+        choice = 3
+        self.clickNext()
 
-    def searchNext(self, statuses, counter): #displays nest tweet
-        self.name.configure(text = statuses[counter].user.name)
-        self.user.configure(text = "@" + statuses[counter].user.screen_name)
-        self.body.configure(text = statuses[counter].text)
-        counter += 1
+    def clickNext(self): #displays next tweet
+        try:
+            counter
+        except NameError:
+            counter = 0
+        if choice == 0:
+            users = twitter_api.GetFriends()
+            self.name.configure(text = users[counter].name)
+            self.user.configure(text = "@" + users[counter].screen_name)
+            counter += 1
+        if choice == 1:
+            statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
+            self.name.configure(text = statuses[counter].user.name)
+            self.user.configure(text = "@" + statuses[counter].user.screen_name)
+            self.body.configure(text = statuses[counter].text)
+            counter += 1
+        if choice == 2:
+            statuses = twitter_api.GetHomeTimeline()
+            self.name.configure(text = statuses[counter].user.name)
+            self.user.configure(text = "@" + statuses[counter].user.screen_name)
+            self.body.configure(text = statuses[counter].text)
+            counter += 1
+        if choice == 3:
+            statuses = twitter_api.GetSearch(term = query)
+            self.name.configure(text = statuses[counter].user.name)
+            self.user.configure(text = "@" + statuses[counter].user.screen_name)
+            self.body.configure(text = statuses[counter].text)
+            counter += 1
 
 #run program
 root = Tk()
