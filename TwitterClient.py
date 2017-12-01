@@ -149,16 +149,17 @@ class TwitterClient:
             statuses2 = twitter_api.GetHomeTimeline()
 
     def clickSearch(self): #gets array of tweets with a search term, displays first one
-        self.next.grid()
         global counter
         global choice
         counter = 0
+        choice = 3
         global query
         global statuses3
         query = self.searchbar.get()
-        statuses3 = twitter_api.GetSearch(term = query)
-        choice = 3
-        self.clickNext()
+        if query != "":
+            self.next.grid()
+            statuses3 = twitter_api.GetSearch(term = query)
+            self.clickNext()
 
     def clickNext(self): #displays next tweet or user to the GUI
         global counter
