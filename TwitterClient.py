@@ -153,8 +153,10 @@ class TwitterClient:
         global counter
         global choice
         counter = 0
+        global query
+        global statuses3
         query = self.searchbar.get()
-        statuses = twitter_api.GetSearch(term = query)
+        statuses3 = twitter_api.GetSearch(term = query)
         choice = 3
         self.clickNext()
 
@@ -188,6 +190,7 @@ class TwitterClient:
                 self.body.configure(text = statuses2[counter].text)
                 counter += 1
         if choice == 3:
+            global query
             if statuses3 == []:
                 statuses = twitter_api.GetSearch(term = query)
             if counter < len(statuses3):
