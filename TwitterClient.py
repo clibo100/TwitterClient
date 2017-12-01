@@ -8,7 +8,6 @@
 
 #TODO:
 #Figure out how logging in works and then do that
-#Next button does not work (the self.next.configure(command = whatever) seems to not actually be configuring the command)
 
 from Tkinter import *
 import twitter
@@ -22,7 +21,6 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
                       access_token_secret='5nP7uYGnnE5qo2sYKKpYkQ4QDQJ9oEB7RTOWoLabFC5cc') #this logs in @clibo100
 
 #global variables
-global counter
 counter = 0
 global choice 
 choice = 0
@@ -96,6 +94,8 @@ class TwitterClient:
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
         users = twitter_api.GetFriends()
+        global counter
+        global choice
         counter = 0
         choice = 0
         self.body.configure(text = " ")
@@ -105,6 +105,8 @@ class TwitterClient:
         self.next.grid()
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
+        global counter
+        global choice
         counter = 0
         choice = 1
         statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
@@ -114,6 +116,8 @@ class TwitterClient:
         self.next.grid()
         self.tweetfield.grid_remove()
         self.tweetbutton.grid_remove()
+        global counter
+        global choice
         counter = 0
         choice = 2
         statuses = twitter_api.GetHomeTimeline()
@@ -137,6 +141,8 @@ class TwitterClient:
 
     def clickSearch(self): #gets array of tweets with a search term, displays first one
         self.next.grid()
+        global counter
+        global choice
         counter = 0
         query = self.searchbar.get()
         statuses = twitter_api.GetSearch(term = query)
@@ -144,10 +150,7 @@ class TwitterClient:
         self.clickNext()
 
     def clickNext(self): #displays next tweet
-        try:
-            counter
-        except NameError:
-            counter = 0
+        global counter
         if choice == 0:
             users = twitter_api.GetFriends()
             self.name.configure(text = users[counter].name)
