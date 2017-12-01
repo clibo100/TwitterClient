@@ -149,19 +149,21 @@ class TwitterClient:
         choice = 3
         self.clickNext()
 
-    def clickNext(self): #displays next tweet
+    def clickNext(self): #displays next tweet or user to the GUI
         global counter
         if choice == 0:
             users = twitter_api.GetFriends()
-            self.name.configure(text = users[counter].name)
-            self.user.configure(text = "@" + users[counter].screen_name)
-            counter += 1
+            if counter < len(users):
+                self.name.configure(text = users[counter].name)
+                self.user.configure(text = "@" + users[counter].screen_name)
+                counter += 1
         if choice == 1:
             statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
-            self.name.configure(text = statuses[counter].user.name)
-            self.user.configure(text = "@" + statuses[counter].user.screen_name)
-            self.body.configure(text = statuses[counter].text)
-            counter += 1
+            if counter < len(statuses):
+                self.name.configure(text = statuses[counter].user.name)
+                self.user.configure(text = "@" + statuses[counter].user.screen_name)
+                self.body.configure(text = statuses[counter].text)
+                counter += 1
         if choice == 2:
             statuses = twitter_api.GetHomeTimeline()
             self.name.configure(text = statuses[counter].user.name)
