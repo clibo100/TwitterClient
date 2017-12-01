@@ -24,6 +24,10 @@ twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
 counter = 0
 global choice 
 choice = 0
+users = []
+statuses1 = []
+statuses2 = []
+statuses3 = []
 
 #main class
 class TwitterClient:
@@ -130,14 +134,19 @@ class TwitterClient:
         self.next.grid_remove();
         self.tweetfield.grid()
         self.tweetbutton.grid()
+        self.tweetfield.delete(0, 'end')
 
     def clickSendTweet(self): #sends a tweet if it's short enough
         user_input = self.tweetfield.get()
+        global statuses1
+        global statuses2
         if len(user_input) > 280:
             self.name.configure(text = "tweet too long")
         else:
             self.name.configure(text = "tweet successful")
             status = twitter_api.PostUpdate(user_input)
+            statuses1 = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
+            statuses2 = twitter_api.GetHomeTimeline()
 
     def clickSearch(self): #gets array of tweets with a search term, displays first one
         self.next.grid()
@@ -151,31 +160,41 @@ class TwitterClient:
 
     def clickNext(self): #displays next tweet or user to the GUI
         global counter
+        global users
+        global statuses1
+        global statuses2
+        global statuses3
         if choice == 0:
-            users = twitter_api.GetFriends()
+            if users == []:
+                users = twitter_api.GetFriends()
             if counter < len(users):
                 self.name.configure(text = users[counter].name)
                 self.user.configure(text = "@" + users[counter].screen_name)
                 counter += 1
         if choice == 1:
-            statuses = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
-            if counter < len(statuses):
-                self.name.configure(text = statuses[counter].user.name)
-                self.user.configure(text = "@" + statuses[counter].user.screen_name)
-                self.body.configure(text = statuses[counter].text)
+            if statuses1 == []:
+                statuses1 = twitter_api.GetUserTimeline(908004742424518656) #this is the ID of @clibo100, once we impliment loggin we need to change this to the user ID of the user in question
+            if counter < len(statuses1):
+                self.name.configure(text = statuses1[counter].user.name)
+                self.user.configure(text = "@" + statuses1[counter].user.screen_name)
+                self.body.configure(text = statuses1[counter].text)
                 counter += 1
         if choice == 2:
-            statuses = twitter_api.GetHomeTimeline()
-            self.name.configure(text = statuses[counter].user.name)
-            self.user.configure(text = "@" + statuses[counter].user.screen_name)
-            self.body.configure(text = statuses[counter].text)
-            counter += 1
+            if statuses2 == []:
+                statuses2 = twitter_api.GetHomeTimeline()
+            if counter < len (statuses2):
+                self.name.configure(text = statuses2[counter].user.name)
+                self.user.configure(text = "@" + statuses2[counter].user.screen_name)
+                self.body.configure(text = statuses2[counter].text)
+                counter += 1
         if choice == 3:
-            statuses = twitter_api.GetSearch(term = query)
-            self.name.configure(text = statuses[counter].user.name)
-            self.user.configure(text = "@" + statuses[counter].user.screen_name)
-            self.body.configure(text = statuses[counter].text)
-            counter += 1
+            if statuses3 == []:
+                statuses = twitter_api.GetSearch(term = query)
+            if counter < len(statuses3):
+                self.name.configure(text = statuses3[counter].user.name)
+                self.user.configure(text = "@" + statuses3[counter].user.screen_name)
+                self.body.configure(text = statuses3[counter].text)
+                counter += 1
 
 #run program
 root = Tk()
