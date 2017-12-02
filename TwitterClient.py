@@ -6,9 +6,6 @@
 # Start Date: 11/7/2017
 
 
-#TODO:
-#Figure out how logging in works and then do that
-
 from Tkinter import *
 import twitter
 import json
@@ -81,10 +78,6 @@ class TwitterClient:
 
         global request_token
         request_token = dict(urlparse.parse_qsl(content))
-
-        print "Request Token:"
-        print "    - oauth_token        = %s" % request_token['oauth_token']
-        print "    - oauth_token_secret = %s" % request_token['oauth_token_secret']
 
         self.URL.insert(0, "%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
 
@@ -222,13 +215,6 @@ class TwitterClient:
 
         resp, content = client.request(access_token_url, "POST")
         access_token = dict(urlparse.parse_qsl(content))
-
-        print "Access Token:"
-        print "    - oauth_token        = %s" % access_token['oauth_token']
-        print "    - oauth_token_secret = %s" % access_token['oauth_token_secret']
-        print
-        print "You may now access protected resources using the access tokens above." 
-        print
 
         self.URL_label.grid_remove()
         self.URL.grid_remove()
