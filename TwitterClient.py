@@ -11,13 +11,7 @@ import twitter
 import json
 from urllib import unquote
 import urlparse
-import oauth2 as oauth
-
-#instantiate the API with the Oauth tokens 
-#twitter_api = twitter.Api(consumer_key='d8ICLBVp1RE6hEIuohrNUyCGT',
-#                      consumer_secret='Ri4GQ1eEc8yLwpkCI4UkKxtbMXxObLzor8Gep97pXHROlLF9WR',
-#                      access_token_key='908004742424518656-ePYoPahlW08jOWm62ppI9U6FOqUOEeN',
-#                      access_token_secret='5nP7uYGnnE5qo2sYKKpYkQ4QDQJ9oEB7RTOWoLabFC5cc') 
+import oauth2 as oauth 
 
 #global variables
 counter = 0
@@ -43,6 +37,7 @@ class TwitterClient:
         global vcmd
         vcmd = master.register(self.validate)
 
+        #make GUI for first screen
         self.URL_label = Label(master, text = "Please visit this website:")
         self.URL = Entry(master, validate="key", validatecommand=(vcmd, '%P'))
         self.pin_label = Label(master, text = "Please Enter Pin:")
@@ -55,6 +50,7 @@ class TwitterClient:
         self.pin_entry.grid(row = 3, column = 0, columnspan = 10, sticky = W)
         self.pin_button.grid(row = 3, column = 11, columnspan = 10, sticky = W)
 
+        #Oauth steps, sending user to URL to retrieve their PIN
         global consumer_key
         consumer_key = 'd8ICLBVp1RE6hEIuohrNUyCGT'
         global consumer_secret
@@ -91,9 +87,6 @@ class TwitterClient:
             return True
         except ValueError:
             return False
-
-    def greet(self): #this is for error testing 
-        print("Greetings!")
 
     def clickFollowing(self): #removes and adds elements of GUI, configures next button, displays first element
         self.next.grid()
@@ -206,6 +199,7 @@ class TwitterClient:
                 counter += 1
 
     def clickEnterPin(self):
+        #Oauth verification after PIN is entered
         oauth_verifier = self.pin_entry.get()
 
         token = oauth.Token(request_token['oauth_token'],
@@ -216,15 +210,18 @@ class TwitterClient:
         resp, content = client.request(access_token_url, "POST")
         access_token = dict(urlparse.parse_qsl(content))
 
+        #remove elements from screen
         self.URL_label.grid_remove()
         self.URL.grid_remove()
         self.pin_label.grid_remove()
         self.pin_entry.grid_remove()
         self.pin_button.grid_remove()
 
+        #make the API
         global twitter_api
         twitter_api = twitter.Api(consumer_key = consumer_key, consumer_secret = consumer_secret, access_token_key = access_token['oauth_token'], access_token_secret = access_token['oauth_token_secret'])
 
+        #place new elements onto screen
         self.enter_name_label = Label(self.master, text = "Please enter your screen name. Example: @twitter", wraplength = 200)
         self.enter_name = self.searchbar = Entry(self.master, validate="key", validatecommand=(vcmd, '%P'))
         self.enter_name_button = Button(self.master, text="Enter", command = self.clickEnterScreenName)
@@ -234,6 +231,7 @@ class TwitterClient:
         self.enter_name_button.grid(row = 1, column = 11, columnspan = 10, sticky = W)
 
     def clickEnterScreenName(self):
+        #declare screen name, user ID, and the user object to be used later
         global user_screenname 
         user_screenname = self.enter_name.get()
         if user_screenname[0] == "@":
@@ -245,11 +243,12 @@ class TwitterClient:
         global user_ID 
         user_ID = user_object.id
 
+        #remove elements of GUI no longer needed
         self.enter_name_label.grid_remove()
         self.enter_name.grid_remove()
         self.enter_name_button.grid_remove()
 
-        #make all of the elements of the GUI, assign them titles and commands
+        #make all of the main app elements of the GUI, assign them titles and commands
         self.searchbar = Entry(self.master, validate="key", validatecommand=(vcmd, '%P'))
         self.searchbutton = Button(self.master, text="Search Tweets", command = self.clickSearch)
         self.mytweets = Button(self.master, text="My Tweets", command = self.clickMyTweets)
