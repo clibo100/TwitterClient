@@ -1,8 +1,8 @@
-Project name:
-Programmers:
-Code Reviewer:
+Project name: TwitterClient
+Programmers: Sierra Clibourne, Jennifer Prosinski
+Code Reviewer: Samy Achour
 
-On a scale of 1 to 5, I give this code a rating of 5 based on the following criteria:
+On a scale of 1 to 5, I give this code a rating of 6 based on the following criteria:
 
 1  I was not able to compile the program due to insufficient information in the README.md file.
 
